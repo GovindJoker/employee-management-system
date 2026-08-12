@@ -1,7 +1,7 @@
 import { error } from 'node:console'
 import AppError from '../errors/AppError.js'
 import * as permissionRepository from '../repositories/permission.repository.js'
-import { CreatePermissionInput, GetPermissionQuery, UpdatePermissionInput } from '../validations/permission.validation.js'
+import { CreatePermissionInput, GetPermissionQuery, UpdatePermissionInput, UpdatePermissionStatusInput } from '../validations/permission.validation.js'
 
 
 export const createPermission = async (data:CreatePermissionInput)=>{
@@ -39,4 +39,12 @@ export const updatePermissionById = async (id:number,data:UpdatePermissionInput 
         }
     }
     return await permissionRepository.updatePermissionById(id,data)
+}
+
+export const updatePermissionStatusById = async (id:number,data:UpdatePermissionStatusInput)=>{
+    const findPermission= await permissionRepository.getPermissionById(id);
+    if(!findPermission){
+        throw new AppError("Permission does not exist",404);
+    }
+    
 }
