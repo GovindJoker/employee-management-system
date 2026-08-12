@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { successResponse } from "../utils/response.js";
-import { createPermissionSchema, getPermissionSchema, updatePermissionSchema } from "../validations/permission.validation.js";
+import { createPermissionSchema, getPermissionSchema, updatePermissionSchema, updatePermissionStatusSchema } from "../validations/permission.validation.js";
 import * as permissionService from '../services/permission.service.js'
 import { id } from "zod/locales";
 
@@ -62,3 +62,19 @@ export const updatePermissionById = asyncHandler(
         })
     }
 ) 
+
+
+export const updatePermissionStatusById = asyncHandler(
+    async ( req:Request , res:Response )=>{
+
+        const id = Number(req.params.id);
+        const data = updatePermissionStatusSchema.parse(req.body);
+        const result  =  await permissionService.updatePermissionStatusById(id,data);
+        successResponse({
+            res,
+            statusCode:200,
+            message:"Permission status updated sucessfully.",
+            data:result
+        })
+    }
+)

@@ -46,5 +46,11 @@ export const updatePermissionStatusById = async (id:number,data:UpdatePermission
     if(!findPermission){
         throw new AppError("Permission does not exist",404);
     }
-    
+    if(findPermission.isActive===data.isActive){
+        throw new AppError(
+            data.isActive?
+            "Permission is Already Active.":"permission is already deactive.",400
+        )
+    }
+    return await permissionRepository.updatePermissionStatusById(id,data);
 }
