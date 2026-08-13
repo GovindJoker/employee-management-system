@@ -3,10 +3,15 @@ import { Request, Response } from "express";
 import * as roleService from '../services/role.service.js';
 import { successResponse } from "../utils/response.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { getRolesSchema, updateRoleSchema, updateRoleStatusSchema } from "../validations/role.validation.js";
+import { createSchemaRole, getRolesSchema, updateRoleSchema, updateRoleStatusSchema } from "../validations/role.validation.js";
+import AppError from "../errors/AppError.js";
 
 export const createRole = asyncHandler(async (req: Request, res: Response) => {
-    const role = await roleService.createRole(req.body);
+    const data = createSchemaRole.parse(req.body)
+     if(Object.keys(data).length===0){
+            throw new AppError("Invalid body data",400)
+        }
+    const role = await roleService.createRole(data);
     successResponse({
         res,
         statusCode: 201,
@@ -47,6 +52,9 @@ export const updateRoleById = asyncHandler(
     async (req:Request,res:Response)=>{
         const id = Number(req.params.id);
         const data= updateRoleSchema.parse(req.body);
+         if(Object.keys(data).length===0){
+            throw new AppError("Invalid body data",400)
+        }
         const result =await roleService.updteRoleById(id,data)
         successResponse({
             res,
@@ -61,6 +69,9 @@ export const updateRoleStatus = asyncHandler(
     async (req:Request,res:Response)=>{
         const id=Number(req.params.id);
         const data = updateRoleStatusSchema.parse(req.body);
+         if(Object.keys(data).length===0){
+            throw new AppError("Invalid body data",400)
+        }
         const result = await roleService.updateRoleStatus(id,data)
         successResponse({
             res,

@@ -4,6 +4,7 @@ import { successResponse } from "../utils/response.js";
 import { createPermissionSchema, getPermissionSchema, updatePermissionSchema, updatePermissionStatusSchema } from "../validations/permission.validation.js";
 import * as permissionService from '../services/permission.service.js'
 import { id } from "zod/locales";
+import AppError from "../errors/AppError.js";
 
 
 export const createPermission = asyncHandler(
@@ -53,6 +54,10 @@ export const updatePermissionById = asyncHandler(
     async (req:Request,res:Response)=>{
         const id = Number(req.params.id);
         const data = updatePermissionSchema.parse(req.body);
+        console.log("data---",data)
+        if(Object.keys(data).length===0){
+            throw new AppError("Invalid body data",400)
+        }
         const result = await permissionService.updatePermissionById(id,data);
         successResponse({
             res,
@@ -69,6 +74,9 @@ export const updatePermissionStatusById = asyncHandler(
 
         const id = Number(req.params.id);
         const data = updatePermissionStatusSchema.parse(req.body);
+         if(Object.keys(data).length===0){
+            throw new AppError("Invalid body data",400)
+        }
         const result  =  await permissionService.updatePermissionStatusById(id,data);
         successResponse({
             res,
