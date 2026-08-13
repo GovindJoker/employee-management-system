@@ -14,17 +14,8 @@ model Role {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
 
-model RolePermission {
-  id           Int         @id @default(autoincrement())
-  name         String      @unique
-  description  String?
-  isActive     Boolean     @default(true)
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-  permission   Permission? @relation(fields: [permissionId], references: [id])
-  permissionId Int?
+  rolePermissions RolePermission[]
 }
 
 model Permission {
@@ -36,4 +27,17 @@ model Permission {
   updatedAt   DateTime @updatedAt
 
   rolePermissions RolePermission[]
+}
+
+model RolePermission {
+  id           Int @id @default(autoincrement())
+  roleId       Int
+  permissionId Int
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([roleId, permissionId])
 }
