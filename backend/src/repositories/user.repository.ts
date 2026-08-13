@@ -1,5 +1,5 @@
 import prisma from "../config/prisma.js";
-import { CreateUserInput, GetUserQuery, UpdateUserInput } from "../validations/user.validation.js";
+import { CreateUserInput, GetUserQuery, UpdateUserInput, UpdateUserStatusInput } from "../validations/user.validation.js";
 
 
 export const findUserByEmail = async (email: string) => {
@@ -135,6 +135,16 @@ export const getUserById = async (id:number)=>{
 
 export const updateUser = async (id:number,data:UpdateUserInput)=>{
     return prisma.user.update({
+        where:{
+            id
+        },
+        data
+    })
+}
+
+
+export const updateUserStatus = async (id:number,data:UpdateUserStatusInput)=>{
+    return await prisma.user.update({
         where:{
             id
         },

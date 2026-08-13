@@ -1,6 +1,6 @@
 import AppError from '../errors/AppError.js';
 import * as userRepository from '../repositories/user.repository.js'
-import { CreateUserInput, GetUserQuery, UpdateUserInput } from '../validations/user.validation.js'
+import { CreateUserInput, GetUserQuery, UpdateUserInput, UpdateUserStatusInput } from '../validations/user.validation.js'
 import bcrypt from 'bcrypt'
 
 export const createUser = async (data: CreateUserInput) => {
@@ -81,3 +81,17 @@ export const updateUser = async (id: number, data: UpdateUserInput) => {
 
     return await userRepository.updateUser(id, data)
 } 
+
+
+export const updateUserStatus = async (id:number,data:UpdateUserStatusInput)=>{
+    const userDetails = await userRepository.getUserById(id);
+    if(!userDetails){
+        throw new AppError("User does not exist",404);
+    }
+    if(userDetails.role.name==="Super Admin"){
+        throw new AppError("Super Admin can not deactive by this API.",403)
+    }
+    return await userRepository.updateUserStatus(id,data);
+
+    // return await prisma
+}
