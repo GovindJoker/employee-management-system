@@ -1,6 +1,6 @@
 import AppError from '../errors/AppError.js';
 import * as departmentRepository from '../repositories/department.repository.js'
-import { CreateDepartmentInput, GetDepartmentQuery } from "../validations/department.validation.js";
+import { CreateDepartmentInput, GetDepartmentQuery, UpdateDepartmentInput, UpdateDepartmentStatusInput } from "../validations/department.validation.js";
 
 
 export const createDepartment = async (data:CreateDepartmentInput)=>{
@@ -21,4 +21,30 @@ export const getDepartmentById = async (id:number)=>{
         throw new AppError("Department not found",404)
     }
     return data;
+}
+
+export const updateDepartment = async (id:number,data:UpdateDepartmentInput)=>{
+    const departmentDetailsById = await departmentRepository.getDepartmentById(id);
+    if(!departmentDetailsById){
+        throw new AppError("Department not found",404)
+    }
+    const name = data.name?.trim()
+    if(name&&name!==""&&name!==departmentDetailsById.name){
+        const departmentDetailsByName = await departmentRepository.findDepartmentByName(name)
+        if(departmentDetailsByName){
+            throw new AppError("Department already exist",409)
+        }
+    }
+    return await departmentRepository.updateDepartment(id,data)
+}
+
+export const updateDepartmentStatus = async (id:number,data:UpdateDepartmentStatusInput)=>{
+    const departmentDetailsById = await departmentRepository.getDepartmentById(id);
+    if(!departmentDetailsById){
+        throw new AppError("Department not found",404)
+    }
+    if(departmentDetailsById.isActive===data.isActive){
+        throw new AppError(data.isActive?"Department status is already Active.":"Department status is already inActive.",409)
+    }
+    return await departmentRepository.updateDepartmentStatus(id,data)
 }

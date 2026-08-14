@@ -78,24 +78,50 @@ model Employee {
   email     String
   phone     String?
 
-  designation String?
   joiningDate DateTime
 
-  departmentId Int
-  managerId    Int?
-  teamLeadId   Int?
+  designationId Int
+  departmentId  Int
+  managerId     Int?
+  teamLeadId    Int?
 
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  designation Designation @relation(fields: [designationId], references: [id])
+
   department Department @relation(fields: [departmentId], references: [id])
 
   manager     Employee?  @relation("EmployeeManager", fields: [managerId], references: [id])
   teamMembers Employee[] @relation("EmployeeManager")
 
-  teamLead        Employee?  @relation("EmployeeTeamLead", fields: [teamLeadId], references: [id])
-  teamLeadMembers Employee[] @relation("EmployeeTeamLead")
-  user            User?
+  teamLead         Employee?       @relation("EmployeeTeamLead", fields: [teamLeadId], references: [id])
+  teamLeadMembers  Employee[]      @relation("EmployeeTeamLead")
+  user             User?
+  employmentType   EmploymentType? @relation(fields: [employmentTypeId], references: [id])
+  employmentTypeId Int?
+}
+
+model Designation {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employees Employee[]
+}
+
+model EmploymentType {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employees Employee[]
 }

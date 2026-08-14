@@ -4,6 +4,7 @@ import permissionRouter from './permission.routes.js'
 import rolePermissionRouter from './rolePermission.routes.js'
 import userRouter from './user.routes.js'
 import departmentRouter from './department.routes.js'
+import designationRouter from './designation.router.js'
 
 const router=Router();
 
@@ -12,5 +13,6 @@ router.use('/permissions',permissionRouter)
 router.use('/roles',rolePermissionRouter)
 router.use('/users',userRouter)
 router.use('/department',departmentRouter)
+router.use('/designation',designationRouter)
 
 export default router;

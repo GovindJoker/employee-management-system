@@ -1,5 +1,5 @@
 import prisma from "../config/prisma.js"
-import { CreateDepartmentInput, GetDepartmentQuery } from "../validations/department.validation.js"
+import { CreateDepartmentInput, GetDepartmentQuery, UpdateDepartmentInput, UpdateDepartmentStatusInput } from "../validations/department.validation.js"
 
 
 
@@ -69,4 +69,23 @@ export const getDepartmentById = async (id:number)=>{
             id
         }
     }) 
+}
+
+export const updateDepartment = async (id:number,data:UpdateDepartmentInput)=>{
+    return await prisma.department.update({
+        where:{
+            id
+        },
+        data
+    })
+} 
+
+
+export const updateDepartmentStatus =  async (id:number,data:UpdateDepartmentStatusInput)=>{
+    return await prisma.department.update({
+        where:{
+            id
+        },
+        data
+    })
 }

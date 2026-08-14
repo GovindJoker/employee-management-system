@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import * as departmentService from '../services/department.service.js'
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { createDepartmentSchema, getDepartmentSchema } from '../validations/department.validation.js';
+import { createDepartmentSchema, getDepartmentSchema, updateDepartmentSchema, updateDepartmentStatusSchema } from '../validations/department.validation.js';
 import { successResponse } from '../utils/response.js';
 import AppError from '../errors/AppError.js';
+import { success } from 'zod';
 
 
 
@@ -50,6 +51,45 @@ export const getDepartmentById = asyncHandler(
             res,
             statusCode:200,
             message:"Department found successfully",
+            data:result
+        })
+    }
+)
+
+
+export const updateDepartment = asyncHandler(
+    async(req:Request,res:Response)=>{
+        const id = Number(req.params.id);
+        console.log("first")
+        const body = updateDepartmentSchema.parse(req.body);
+        if(!Number.isInteger(id) || id<=0){
+            throw new AppError("Invalid department id.",400)
+        }
+        const result = await departmentService.updateDepartment(id,body)
+
+        successResponse({
+            res,
+            statusCode:200,
+            message:"Department updated successfully",
+            data:result
+        })
+    }
+)
+
+export const updateDepartmentStatus = asyncHandler(
+    async(req:Request,res:Response)=>{
+        const id = Number(req.params.id);
+        // console.log("first")
+        const body = updateDepartmentStatusSchema.parse(req.body);
+        if(!Number.isInteger(id) || id<=0){
+            throw new AppError("Invalid department id.",400)
+        }
+        const result = await departmentService.updateDepartmentStatus(id,body)
+
+        successResponse({
+            res,
+            statusCode:200,
+            message:"Department status updated successfully",
             data:result
         })
     }
