@@ -1,22 +1,39 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
 import AppError from "../errors/AppError.js";
 
 export const errorHandler = (
-  err: Error,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
 
-  if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
+  // Zod validation error
+  if (err instanceof ZodError) {
+    return res.status(400).json({
       success: false,
-      message: err.message,
+      message: "Validation failed",
+      errors: err.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message
+      }))
     });
   }
 
+  // Your custom AppError
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      message: err.message
+    });
+  }
+
+  // Unknown error
+  console.error(err);
+
   return res.status(500).json({
     success: false,
-    message: "Internal Server Error",
+    message: "Internal Server Error"
   });
 };

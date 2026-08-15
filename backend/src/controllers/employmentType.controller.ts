@@ -9,6 +9,7 @@ import AppError from '../errors/AppError.js';
 
 export const createEmploymentType = asyncHandler(
     async (req:Request,res:Response)=>{
+        console.log("first")
         const data = createEmploymentTypeSchema.parse(req.body);
         const result =await employmentType.createEmploymentType(data);
         

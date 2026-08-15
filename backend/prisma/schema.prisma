@@ -73,18 +73,40 @@ model Employee {
   id           Int    @id @default(autoincrement())
   employeeCode String @unique
 
+  // Basic information
   firstName String
   lastName  String?
-  email     String
+  email     String  @unique
   phone     String?
 
-  joiningDate DateTime
+  // Personal information
+  dateOfBirth DateTime?
+  gender      String?
 
-  designationId Int
-  departmentId  Int
-  managerId     Int?
-  teamLeadId    Int?
+  // Address
+  address    String?
+  city       String?
+  state      String?
+  country    String?
+  postalCode String?
 
+  // Emergency contact
+  emergencyContactName  String?
+  emergencyContactPhone String?
+
+  // Employment information
+  joiningDate      DateTime
+  departmentId     Int
+  designationId    Int
+  employmentTypeId Int
+
+  // Organization / responsibility
+  reportsToId Int?
+  managerId   Int?
+  teamLeadId  Int?
+  hrId        Int?
+
+  // Employee status
   isActive Boolean @default(true)
 
   createdAt DateTime @default(now())
@@ -94,14 +116,24 @@ model Employee {
 
   department Department @relation(fields: [departmentId], references: [id])
 
-  manager     Employee?  @relation("EmployeeManager", fields: [managerId], references: [id])
-  teamMembers Employee[] @relation("EmployeeManager")
+  employmentType EmploymentType @relation(fields: [employmentTypeId], references: [id])
 
-  teamLead         Employee?       @relation("EmployeeTeamLead", fields: [teamLeadId], references: [id])
-  teamLeadMembers  Employee[]      @relation("EmployeeTeamLead")
-  user             User?
-  employmentType   EmploymentType? @relation(fields: [employmentTypeId], references: [id])
-  employmentTypeId Int?
+  // Organizational hierarchy
+  reportsTo    Employee?  @relation("EmployeeReportsTo", fields: [reportsToId], references: [id])
+  subordinates Employee[] @relation("EmployeeReportsTo")
+
+  manager          Employee?  @relation("EmployeeManager", fields: [managerId], references: [id])
+  managedEmployees Employee[] @relation("EmployeeManager")
+
+  teamLead    Employee?  @relation("EmployeeTeamLead", fields: [teamLeadId], references: [id])
+  teamMembers Employee[] @relation("EmployeeTeamLead")
+
+  // HR
+  hr Employee? @relation("EmployeeHR", fields: [hrId], references: [id])
+
+  hrEmployees Employee[] @relation("EmployeeHR")
+
+  user User?
 }
 
 model Designation {
